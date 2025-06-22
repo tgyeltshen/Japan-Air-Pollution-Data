@@ -95,3 +95,38 @@ data_list <- process_all_years(years, output_dir)
 
 # Step 4: Save output
 save(data_list, file = "jpn_air_poltn_nies.RData")
+
+
+#Mkae time-series by prefecture
+# Flatten nested list (year → prefecture → data frame) into a single data frame
+daily_ts_long <- map2_dfr(pref_nested_cleaned, names(pref_nested_cleaned), function(pref_list, year) {
+        map_dfr(pref_list, ~.x, .id = "prefecture") %>%
+                mutate(year = year)
+})
+
+
+table(daily_ts_long$prefecture)
+
+
+# Clean and reshape to wide format: one row per date + prefecture, columns for each pollutant
+daily_ts_wide <- daily_ts_long %>%
+        mutate(
+                measurement_code = str_trim(measurement_code),
+                unit_code = str_trim(unit_code)
+                # Optional: use this if unit_code matters for uniqueness
+                # , label = paste0(measurement_code, "_", unit_code)
+        ) %>%
+        group_by(date, prefecture, year, measurement_code) %>%
+        summarise(daily_avg = mean(daily_avg, na.rm = TRUE), .groups = "drop") %>%
+        pivot_wider(names_from = measurement_code, values_from = daily_avg) %>% 
+        arrange(date)
+
+daily_ts_wide_pref <- split(daily_ts_wide, daily_ts_wide$prefecture)
+
+# Save the reshaped wide-format daily time series
+# save(daily_ts_wide, file = "prefectural_daily_ts_wide.RData")
+
+
+
+
+
