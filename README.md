@@ -42,3 +42,5 @@ Extracting this file will give you garbled character name for the folder because
 Before running the Run Sep 3 in the script. Follow Step 2a. 
 
 This step can be skipped if you use Japanese encoding system in your machine. 
+
+These steps will give you processed air pollution data by prefecture hourly and can further be aggregated to daily time series.
