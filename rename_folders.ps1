@@ -35,10 +35,10 @@ Get-ChildItem $base -Directory | ForEach-Object {
 
                 if ($current.FullName -ne $newPath) {
                     Rename-Item -Path $current.FullName -NewName $newName
-                    Write-Host "✅ Renamed: $($current.Name) → $newName"
+                    Write-Host "Renamed: $($current.Name) → $newName"
                 }
             } else {
-                Write-Host "⚠️ Unknown code: $($current.Name)"
+                Write-Host "Unknown code: $($current.Name)"
             }
         }
     }
